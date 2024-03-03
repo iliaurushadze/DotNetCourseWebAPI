@@ -41,5 +41,22 @@ namespace DotNetCourseWebAPI.Controllers
             UserJobInfo userJobInfo = _dapper.LoadDataSingle<UserJobInfo>(sql);
             return userJobInfo;
         }
+
+        [HttpPut("EditUserJobInfo")]
+        public IActionResult EditUserJobInfo(UserJobInfo userJobInfo)
+        {
+            string sql = @"
+                UPDATE [DotNetCourseDatabase].[TutorialAppSchema].[UserJobInfo]
+                    SET JobTitle = " + "'" + userJobInfo.JobTitle + "'," +
+                        "Department = " + "'" + userJobInfo.Department + "'" +
+                "WHERE UserId = " + userJobInfo.UserId;
+
+            if(_dapper.ExecuteSql(sql))
+            {
+                return Ok();
+            }
+
+            throw new Exception("Failed to upda user");
+        }
     }
 }
