@@ -1,4 +1,5 @@
 ﻿using DotNetCourseWebAPI.Data;
+using DotNetCourseWebAPI.DTOs;
 using DotNetCourseWebAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -69,7 +70,7 @@ namespace DotNetCourseWebAPI.Controllers
         }
 
         [HttpPost("AddUser")]
-        public IActionResult AddUser(User user)
+        public IActionResult AddUser(UserToAddDto userToAddDto)
         {
             string sql = @"
             INSERT INTO TutorialAppSchema.Users(
@@ -78,17 +79,17 @@ namespace DotNetCourseWebAPI.Controllers
                 [Email],
                 [Gender],
                 [Active]) VALUES("+ 
-                "'" + user.FirstName + "'," +
-                "'" + user.LastName + "'," +
-                "'" + user.Email + "'," +
-                "'" + user.Gender + "'," +
-                "'" + user.Active + "'" +
+                "'" + userToAddDto.FirstName + "'," +
+                "'" + userToAddDto.LastName + "'," +
+                "'" + userToAddDto.Email + "'," +
+                "'" + userToAddDto.Gender + "'," +
+                "'" + userToAddDto.Active + "'" +
             ")";
             Console.WriteLine(sql);
 
             if (_dapper.ExecuteSql(sql))
             {
-                return Ok(user);
+                return Ok();
             }
 
             throw new Exception("Failed to add user");
