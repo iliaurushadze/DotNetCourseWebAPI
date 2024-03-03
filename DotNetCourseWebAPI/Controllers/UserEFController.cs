@@ -1,4 +1,5 @@
-﻿using DotNetCourseWebAPI.Data;
+﻿using AutoMapper;
+using DotNetCourseWebAPI.Data;
 using DotNetCourseWebAPI.DTOs;
 using DotNetCourseWebAPI.Models;
 using Microsoft.AspNetCore.Http;
@@ -11,10 +12,15 @@ namespace DotNetCourseWebAPI.Controllers
     public class UserEFController : ControllerBase
     {
         private readonly DataContextEF _ef;
+        Mapper _mapper;
 
         public UserEFController(IConfiguration config)
         {
             _ef = new DataContextEF(config);
+            _mapper = new Mapper(new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<UserToAddDto, User>();
+            }));
         }
 
         [HttpGet("GetUsers")]
@@ -63,13 +69,7 @@ namespace DotNetCourseWebAPI.Controllers
         [HttpPost("AddUser")]
         public IActionResult AddUser(UserToAddDto userToAddDto)
         {
-            User userDb = new User();
-
-            userDb.FirstName = userToAddDto.FirstName;
-            userDb.LastName = userToAddDto.LastName;
-            userDb.Email = userToAddDto.Email;
-            userDb.Gender = userToAddDto.Gender;
-            userDb.Active = userToAddDto.Active;
+            User userDb = _mapper.Map<User>(userToAddDto);
             
             _ef.Add(userDb);
 
