@@ -77,5 +77,17 @@ namespace DotNetCourseWebAPI.Controllers
 
             throw new Exception("Failed to add user job info");
         }
+
+        [HttpDelete("DeleteUserJobInfo/{userId}")]
+        public IActionResult DeleteUserJobInfo(int userId)
+        {
+            string sql = @"
+                DELETE FROM TutorialAppSchema.UserJobInfo
+                WHERE UserId = " + userId.ToString();
+            if (_dapper.ExecuteSql(sql))
+                return Ok();
+
+            throw new Exception("Failed to delete user job info");
+        }
     }
 }
