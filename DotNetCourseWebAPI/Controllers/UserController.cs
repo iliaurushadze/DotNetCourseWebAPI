@@ -44,26 +44,54 @@ namespace DotNetCourseWebAPI.Controllers
                 ,[Active]
             FROM [DotNetCourseDatabase].[TutorialAppSchema].[Users]
             WHERE UserId = " + userId.ToString();
-            Console.WriteLine(sql);
             User user = _dapper.LoadDataSingle<User>(sql);
             return user;
         }
 
-        [HttpGet("TestConnection")]
-        public DateTime GetDate()
+        [HttpPut("EditUser")]
+        public IActionResult EditUser(User user)
         {
-            return _dapper.LoadDataSingle<DateTime>("SELECT GETDATE()");
+            string sql = @"
+                UPDATE [DotNetCourseDatabase].[TutorialAppSchema].[Users]
+                    SET FirstName = " + "'" + user.FirstName + "'," +
+                        "LastName = " + "'" + user.LastName + "'," +
+                        "Email = " + "'" + user.Email + "'," +
+                        "Gender = " + "'" + user.Gender + "'," +
+                        "Active = " + "'" + user.Active + "'" +
+                "WHERE UserId = " + user.UserId;  
+
+            if(_dapper.ExecuteSql(sql))
+            {
+                return Ok(user);
+            }
+
+            throw new Exception("Failed to update user");
         }
 
-        [HttpGet("GetUsers/{testValue}")]
-        public string[] GetUsers(string testValue)
+        [HttpPost("AddUser")]
+        public IActionResult AddUser(User user)
         {
-            string[] resultArray = new string[] {
-                "test1",
-                "test2",
-                testValue
-            };
-            return resultArray;
+            string sql = @"
+            INSERT INTO TutorialAppSchema.Users(
+                [FirstName],
+                [LastName],
+                [Email],
+                [Gender],
+                [Active]) VALUES("+ 
+                "'" + user.FirstName + "'," +
+                "'" + user.LastName + "'," +
+                "'" + user.Email + "'," +
+                "'" + user.Gender + "'," +
+                "'" + user.Active + "'" +
+            ")";
+            Console.WriteLine(sql);
+
+            if (_dapper.ExecuteSql(sql))
+            {
+                return Ok(user);
+            }
+
+            throw new Exception("Failed to add user");
         }
     }
 }
