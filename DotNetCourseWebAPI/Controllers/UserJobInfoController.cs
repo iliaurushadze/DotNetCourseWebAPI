@@ -1,4 +1,5 @@
 ﻿using DotNetCourseWebAPI.Data;
+using DotNetCourseWebAPI.DTOs;
 using DotNetCourseWebAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -52,11 +53,29 @@ namespace DotNetCourseWebAPI.Controllers
                 "WHERE UserId = " + userJobInfo.UserId;
 
             if(_dapper.ExecuteSql(sql))
-            {
                 return Ok();
-            }
 
-            throw new Exception("Failed to upda user");
+            throw new Exception("Failed to update user job info");
+        }
+
+        [HttpPost("AddUserJobInfo")]
+        public IActionResult AdduserJobInfo(UserJobInfo userJobInfo)
+        {
+            string sql = @"
+                INSERT INTO TutorialAppSchema.UserJobInfo(
+                    [UserId],
+                    [JobTitle],
+                    [Department]) VALUES(" +
+                        "'" + userJobInfo.UserId + "'," + 
+                        "'" + userJobInfo.JobTitle + "'," + 
+                        "'" + userJobInfo.Department + "'" +
+                ")";
+            Console.WriteLine(sql);
+
+            if (_dapper.ExecuteSql(sql))
+                return Ok();
+
+            throw new Exception("Failed to add user job info");
         }
     }
 }
