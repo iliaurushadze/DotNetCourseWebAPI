@@ -11,7 +11,7 @@ namespace DotNetCourseWebAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private DataContextDapper _dapper;
+        private readonly DataContextDapper _dapper;
         public UserController(IConfiguration config)
         {
             _dapper = new DataContextDapper(config);
@@ -93,6 +93,19 @@ namespace DotNetCourseWebAPI.Controllers
             }
 
             throw new Exception("Failed to add user");
+        }
+
+        [HttpDelete("DeleteUser/{userId}")]
+        public IActionResult DeleteUser(int userId)
+        {
+            string sql = @"
+                DELETE FROM TutorialAppSchema.Users 
+                    WHERE UserId = " + userId.ToString();
+
+            if (_dapper.ExecuteSql(sql))
+                return Ok();
+
+            throw new Exception("Failed to delete user");
         }
     }
 }
