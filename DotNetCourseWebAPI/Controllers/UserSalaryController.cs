@@ -69,5 +69,17 @@ namespace DotNetCourseWebAPI.Controllers
                 return Ok();
             throw new Exception("Failed to add User Salary");
         }
+
+        [HttpDelete("DeleteUserSalary/{userId}")]
+        public IActionResult DeleteUserSalary(int userId)
+        {
+            string sql = @"
+                DELETE FROM TutorialAppSchema.UserSalary
+                WHERE UserId = " + userId;
+            Console.WriteLine(sql);
+            if (_dapper.ExecuteSql(sql))
+                return Ok();
+            throw new Exception("Failed to delete user salary");
+        }
     }
 }
