@@ -42,5 +42,17 @@ namespace DotNetCourseWebAPI.Controllers
             return userSalary;
         }
 
+        [HttpPut("UpdateUserSalary")]
+        public IActionResult UpdateUserSalary(UserSalary userSalary)
+        {
+            string sql = @"
+                UPDATE TutorialAppSchema.UserSalary
+                SET
+                    Salary = " + userSalary.Salary +
+                    "WHERE UserId = " + userSalary.UserId;
+            if (_dapper.ExecuteSql(sql))
+                return Ok();
+            throw new Exception("Failed to update User Salary");
+        }
     }
 }
