@@ -29,5 +29,18 @@ namespace DotNetCourseWebAPI.Controllers
             return userSalaries;
         }
 
+        [HttpGet("GetSingleSalary/{userId}")]
+        public UserSalary GetSalary(int userId)
+        {
+            string sql = @"
+                SELECT
+                    [UserId],
+                    [Salary]
+                FROM TutorialAppSchema.UserSalary
+                WHERE UserId = " + userId;
+            UserSalary userSalary = _dapper.LoadDataSingle<UserSalary>(sql);
+            return userSalary;
+        }
+
     }
 }
