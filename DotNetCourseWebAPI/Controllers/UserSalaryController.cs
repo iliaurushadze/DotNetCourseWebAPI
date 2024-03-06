@@ -54,5 +54,20 @@ namespace DotNetCourseWebAPI.Controllers
                 return Ok();
             throw new Exception("Failed to update User Salary");
         }
+
+        [HttpPost("AddUserSalary")]
+        public IActionResult AddUserSalary(UserSalary userSalary)
+        {
+            string sql = @"
+                INSERT INTO TutorialAppSchema.UserSalary
+                (UserId, Salary)
+                VALUES("
+                    + userSalary.UserId + ","
+                    + userSalary.Salary +
+                ")";
+            if (_dapper.ExecuteSql(sql))
+                return Ok();
+            throw new Exception("Failed to add User Salary");
+        }
     }
 }
