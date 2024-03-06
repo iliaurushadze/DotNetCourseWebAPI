@@ -16,6 +16,18 @@ namespace DotNetCourseWebAPI.Controllers
             _dapper = new DataContextDapper(config);
         }
 
-        
+        [HttpGet("GetSalaries")]
+        public IEnumerable<UserSalary> GetSalaries()
+        {
+            string sql = @"
+                SELECT 
+                    [UserId],
+                    [Salary]
+                FROM TutorialAppSchema.UserSalary
+            ";
+            IEnumerable<UserSalary> userSalaries = _dapper.LoadData<UserSalary>(sql);
+            return userSalaries;
+        }
+
     }
 }
