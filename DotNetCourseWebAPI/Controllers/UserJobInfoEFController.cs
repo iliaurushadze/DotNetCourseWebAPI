@@ -66,5 +66,21 @@ namespace DotNetCourseWebAPI.Controllers
 
             throw new Exception("Failed to add user job info");
         }
+
+        [HttpDelete("DeleteUserJobInfo{userId}")]
+        public IActionResult DeleteUserJobInfo(int userId)
+        {
+            UserJobInfo? userJobInfo = _ef.UserJobInfo
+               .Where(u => u.UserId == userId)
+               .SingleOrDefault<UserJobInfo>();
+
+            if (userJobInfo != null)
+                _ef.Remove(userJobInfo);
+
+            if (_ef.SaveChanges() > 0)
+                return Ok();
+
+            throw new Exception("Failed to delete user job info");
+        }
     }
 }
