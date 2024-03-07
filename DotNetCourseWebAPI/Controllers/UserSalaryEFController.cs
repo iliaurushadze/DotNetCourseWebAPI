@@ -37,5 +37,23 @@ namespace DotNetCourseWebAPI.Controllers
 
             throw new Exception("Failed to get user salary");
         }
+
+        [HttpPut("EditUserSalary")]
+        public IActionResult EditUserSalary(UserSalary userSalary)
+        {
+            UserSalary? userSalaryDb = _ef.UserSalary
+                .Where(u => u.UserId == userSalary.UserId)
+                .SingleOrDefault<UserSalary>();
+
+            if (userSalaryDb != null)
+            {
+                userSalaryDb.Salary = userSalary.Salary;
+            }
+
+            if (_ef.SaveChanges() > 0)
+                return Ok();
+
+            throw new Exception("Failed to update user job info");
+        }
     }
 }
