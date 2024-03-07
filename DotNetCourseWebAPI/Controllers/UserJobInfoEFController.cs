@@ -21,5 +21,20 @@ namespace DotNetCourseWebAPI.Controllers
             IEnumerable<UserJobInfo> userJobInfos = _ef.UserJobInfo.ToList();
             return userJobInfos;
         }
+
+        [HttpGet("GetSingleUserJobInfo/{userId}")]
+        public UserJobInfo GetSingleUserJobInfo(int userId)
+        {
+            UserJobInfo? userJobInfo = _ef.UserJobInfo
+                .Where(u => u.UserId == userId)
+                .FirstOrDefault<UserJobInfo>();
+
+            if (userJobInfo != null)
+            {
+                return userJobInfo;
+            }
+
+            throw new Exception("Failed to get user job info");
+        }
     }
 }
