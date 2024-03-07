@@ -36,5 +36,24 @@ namespace DotNetCourseWebAPI.Controllers
 
             throw new Exception("Failed to get user job info");
         }
+
+        [HttpPut("EditUserJobInfo")]
+        public IActionResult EditUserJobInfo(UserJobInfo userJobInfo)
+        {
+            UserJobInfo? userJobInfoDb = _ef.UserJobInfo
+                .Where(u => u.UserId == userJobInfo.UserId)
+                .SingleOrDefault<UserJobInfo>();
+
+            if (userJobInfoDb != null)
+            {
+                userJobInfoDb.JobTitle = userJobInfo.JobTitle;
+                userJobInfoDb.Department = userJobInfo.Department;
+            }
+
+            if (_ef.SaveChanges() > 0)
+                return Ok();
+
+            throw new Exception("Failed to update user job info");
+        }
     }
 }
