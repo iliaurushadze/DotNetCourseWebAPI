@@ -55,5 +55,16 @@ namespace DotNetCourseWebAPI.Controllers
 
             throw new Exception("Failed to update user job info");
         }
+
+        [HttpPost("AddUserSalary")]
+        public IActionResult AddUserSalary(UserSalary userSalary)
+        {
+            _ef.Add(userSalary);
+
+            if (_ef.SaveChanges() > 0)
+                return Ok();
+
+            throw new Exception("Failed to add user job info");
+        }
     }
 }
