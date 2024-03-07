@@ -15,6 +15,11 @@ namespace DotNetCourseWebAPI.Controllers
             _ef = new DataContextEF(config);
         }
 
-        
+        [HttpGet("GetUserJobInfo")]
+        public IEnumerable<UserJobInfo> GetUserJobInfo()
+        {
+            IEnumerable<UserJobInfo> userJobInfos = _ef.UserJobInfo.ToList();
+            return userJobInfos;
+        }
     }
 }
