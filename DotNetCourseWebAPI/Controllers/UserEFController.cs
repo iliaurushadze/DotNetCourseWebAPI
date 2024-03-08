@@ -24,8 +24,6 @@ namespace DotNetCourseWebAPI.Controllers
             {
                 cfg.CreateMap<UserToAddDto, User>();
             }));
-            
-
         }
 
         [HttpGet("GetUsers")]
@@ -65,7 +63,7 @@ namespace DotNetCourseWebAPI.Controllers
                 userDb.Active = user.Active;
             }
 
-            if (_ef.SaveChanges() > 0)
+            if (_userRepository.SaveChanges())
                 return Ok();
 
             throw new Exception("Failed to update user");
@@ -76,9 +74,9 @@ namespace DotNetCourseWebAPI.Controllers
         {
             User userDb = _mapper.Map<User>(userToAddDto);
             
-            _ef.Add(userDb);
+            _userRepository.AddEntity<User>(userDb);
 
-            if (_ef.SaveChanges() > 0)
+            if (_userRepository.SaveChanges())
                 return Ok();
 
             throw new Exception("Failed to add user");
@@ -93,10 +91,10 @@ namespace DotNetCourseWebAPI.Controllers
 
             if (userDb != null)
             {
-                _ef.Remove(userDb);
+                _userRepository.RemoveEntity<User>(userDb);
             }
 
-            if (_ef.SaveChanges() > 0)
+            if (_userRepository.SaveChanges())
                 return Ok();
 
             throw new Exception("Failed to delete user");
@@ -137,7 +135,7 @@ namespace DotNetCourseWebAPI.Controllers
                 userJobInfoDb.Department = userJobInfo.Department;
             }
 
-            if (_ef.SaveChanges() > 0)
+            if (_userRepository.SaveChanges())
                 return Ok();
 
             throw new Exception("Failed to update user job info");
@@ -146,9 +144,9 @@ namespace DotNetCourseWebAPI.Controllers
         [HttpPost("AddUserJobInfo")]
         public IActionResult AddUserJobInfo(UserJobInfo userJobInfo)
         {
-            _ef.Add(userJobInfo);
+            _userRepository.AddEntity<UserJobInfo>(userJobInfo);
 
-            if (_ef.SaveChanges() > 0)
+            if (_userRepository.SaveChanges())
                 return Ok();
 
             throw new Exception("Failed to add user job info");
@@ -162,9 +160,9 @@ namespace DotNetCourseWebAPI.Controllers
                .SingleOrDefault<UserJobInfo>();
 
             if (userJobInfo != null)
-                _ef.Remove(userJobInfo);
+                _userRepository.RemoveEntity<UserJobInfo>(userJobInfo);
 
-            if (_ef.SaveChanges() > 0)
+            if (_userRepository.SaveChanges())
                 return Ok();
 
             throw new Exception("Failed to delete user job info");
@@ -204,7 +202,7 @@ namespace DotNetCourseWebAPI.Controllers
                 userSalaryDb.Salary = userSalary.Salary;
             }
 
-            if (_ef.SaveChanges() > 0)
+            if (_userRepository.SaveChanges())
                 return Ok();
 
             throw new Exception("Failed to update user job info");
@@ -213,9 +211,9 @@ namespace DotNetCourseWebAPI.Controllers
         [HttpPost("AddUserSalary")]
         public IActionResult AddUserSalary(UserSalary userSalary)
         {
-            _ef.Add(userSalary);
+            _userRepository.AddEntity<UserSalary>(userSalary);
 
-            if (_ef.SaveChanges() > 0)
+            if (_userRepository.SaveChanges())
                 return Ok();
 
             throw new Exception("Failed to add user job info");
@@ -229,9 +227,9 @@ namespace DotNetCourseWebAPI.Controllers
                .SingleOrDefault<UserSalary>();
 
             if (userSalary != null)
-                _ef.Remove(userSalary);
+                _userRepository.RemoveEntity<UserSalary>(userSalary);
 
-            if (_ef.SaveChanges() > 0)
+            if (_userRepository.SaveChanges())
                 return Ok();
 
             throw new Exception("Failed to delete user job info");
