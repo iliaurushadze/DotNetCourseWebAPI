@@ -12,15 +12,20 @@ namespace DotNetCourseWebAPI.Controllers
     public class UserEFController : ControllerBase
     {
         private readonly DataContextEF _ef;
+        private readonly IUserRepository _userRepository;
         Mapper _mapper;
 
-        public UserEFController(IConfiguration config)
+        public UserEFController(IConfiguration config, IUserRepository userRepository)
         {
             _ef = new DataContextEF(config);
+            _userRepository = userRepository;
+
             _mapper = new Mapper(new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<UserToAddDto, User>();
             }));
+            
+
         }
 
         [HttpGet("GetUsers")]
