@@ -11,13 +11,13 @@ namespace DotNetCourseWebAPI.Controllers
     [ApiController]
     public class UserEFController : ControllerBase
     {
-        private readonly DataContextEF _ef;
+        //private readonly DataContextEF _ef;
         private readonly IUserRepository _userRepository;
         Mapper _mapper;
 
         public UserEFController(IConfiguration config, IUserRepository userRepository)
         {
-            _ef = new DataContextEF(config);
+            //_ef = new DataContextEF(config);
             _userRepository = userRepository;
 
             _mapper = new Mapper(new MapperConfiguration(cfg =>
@@ -29,32 +29,21 @@ namespace DotNetCourseWebAPI.Controllers
         [HttpGet("GetUsers")]
         public IEnumerable<User> GetUsers()
         {
-            IEnumerable<User> users = _ef.Users.ToList<User>();
-            return users;
+            return _userRepository.GetUsers();
         }
 
         [HttpGet("GetSingleUser/{userId}")]
         public User GetSingleUser(int userId)
         {
-            User? user = _ef.Users
-                .Where(u => u.UserId == userId)
-                .SingleOrDefault<User>();
-
-            if(user != null)
-            {
-                return user;
-            }
-
-            throw new Exception("Failed to get user");
+            return _userRepository.GetSingleUser(userId);
         }
 
         [HttpPut("EditUser")]
         public IActionResult EditUser(User user)
         {
-            User? userDb = _ef.Users
-                .Where(u => u.UserId == user.UserId)
-                .SingleOrDefault<User>();
-            if(userDb != null)
+            User? userDb = _userRepository.GetSingleUser(user.UserId);
+
+            if (userDb != null)
             {
                 userDb.FirstName = user.FirstName;
                 userDb.LastName = user.LastName;
@@ -85,9 +74,7 @@ namespace DotNetCourseWebAPI.Controllers
         [HttpDelete("DeleteUser/{userId}")]
         public IActionResult DeleteUser(int userId)
         {
-            User? userDb = _ef.Users
-               .Where(u => u.UserId == userId)
-               .SingleOrDefault<User>();
+            User? userDb = _userRepository.GetSingleUser(userId);
 
             if (userDb != null)
             {
@@ -103,31 +90,19 @@ namespace DotNetCourseWebAPI.Controllers
         [HttpGet("GetUserJobInfo")]
         public IEnumerable<UserJobInfo> GetUserJobInfo()
         {
-            IEnumerable<UserJobInfo> userJobInfos = _ef.UserJobInfo.ToList();
-            return userJobInfos;
+            return _userRepository.GetUserJobInfo();
         }
 
         [HttpGet("GetSingleUserJobInfo/{userId}")]
         public UserJobInfo GetSingleUserJobInfo(int userId)
         {
-            UserJobInfo? userJobInfo = _ef.UserJobInfo
-                .Where(u => u.UserId == userId)
-                .FirstOrDefault<UserJobInfo>();
-
-            if (userJobInfo != null)
-            {
-                return userJobInfo;
-            }
-
-            throw new Exception("Failed to get user job info");
+            return _userRepository.GetSingleUserJobInfo(userId);
         }
 
         [HttpPut("EditUserJobInfo")]
         public IActionResult EditUserJobInfo(UserJobInfo userJobInfo)
         {
-            UserJobInfo? userJobInfoDb = _ef.UserJobInfo
-                .Where(u => u.UserId == userJobInfo.UserId)
-                .SingleOrDefault<UserJobInfo>();
+            UserJobInfo? userJobInfoDb = _userRepository.GetSingleUserJobInfo(userJobInfo.UserId);
 
             if (userJobInfoDb != null)
             {
@@ -155,9 +130,7 @@ namespace DotNetCourseWebAPI.Controllers
         [HttpDelete("DeleteUserJobInfo{userId}")]
         public IActionResult DeleteUserJobInfo(int userId)
         {
-            UserJobInfo? userJobInfo = _ef.UserJobInfo
-               .Where(u => u.UserId == userId)
-               .SingleOrDefault<UserJobInfo>();
+            UserJobInfo? userJobInfo = _userRepository.GetSingleUserJobInfo(userId);
 
             if (userJobInfo != null)
                 _userRepository.RemoveEntity<UserJobInfo>(userJobInfo);
@@ -171,31 +144,19 @@ namespace DotNetCourseWebAPI.Controllers
         [HttpGet("GetUserSalary")]
         public IEnumerable<UserSalary> GetUserSalary()
         {
-            IEnumerable<UserSalary> userSalaries = _ef.UserSalary.ToList();
-            return userSalaries;
+            return _userRepository.GetUserSalary();
         }
 
         [HttpGet("GetSingleUserSalary/{userId}")]
         public UserSalary GetSingleUserSalary(int userId)
         {
-            UserSalary? userSalary = _ef.UserSalary
-                .Where(u => u.UserId == userId)
-                .FirstOrDefault<UserSalary>();
-
-            if (userSalary != null)
-            {
-                return userSalary;
-            }
-
-            throw new Exception("Failed to get user salary");
+            return _userRepository.GetSingleUserSalary(userId);
         }
 
         [HttpPut("EditUserSalary")]
         public IActionResult EditUserSalary(UserSalary userSalary)
         {
-            UserSalary? userSalaryDb = _ef.UserSalary
-                .Where(u => u.UserId == userSalary.UserId)
-                .SingleOrDefault<UserSalary>();
+            UserSalary? userSalaryDb = _userRepository.GetSingleUserSalary(userSalary.UserId);
 
             if (userSalaryDb != null)
             {
@@ -222,9 +183,7 @@ namespace DotNetCourseWebAPI.Controllers
         [HttpDelete("DeleteUserSalary{userId}")]
         public IActionResult DeleteUserSalary(int userId)
         {
-            UserSalary? userSalary = _ef.UserSalary
-               .Where(u => u.UserId == userId)
-               .SingleOrDefault<UserSalary>();
+            UserSalary? userSalary = _userRepository.GetSingleUserSalary(userId);
 
             if (userSalary != null)
                 _userRepository.RemoveEntity<UserSalary>(userSalary);
