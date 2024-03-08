@@ -1,4 +1,6 @@
 
+using DotNetCourseWebAPI.Data;
+
 namespace DotNetCourseWebAPI
 {
     public class Program
@@ -35,6 +37,8 @@ namespace DotNetCourseWebAPI
                         .AllowCredentials();
                 });
             });
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             var app = builder.Build();
 
