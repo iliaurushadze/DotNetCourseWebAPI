@@ -3,7 +3,7 @@ using DotNetCourseWebAPI.Models;
 
 namespace DotNetCourseWebAPI.Data
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly DataContextEF _ef;
 
