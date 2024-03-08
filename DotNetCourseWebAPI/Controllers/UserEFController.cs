@@ -96,5 +96,140 @@ namespace DotNetCourseWebAPI.Controllers
 
             throw new Exception("Failed to delete user");
         }
+
+        [HttpGet("GetUserJobInfo")]
+        public IEnumerable<UserJobInfo> GetUserJobInfo()
+        {
+            IEnumerable<UserJobInfo> userJobInfos = _ef.UserJobInfo.ToList();
+            return userJobInfos;
+        }
+
+        [HttpGet("GetSingleUserJobInfo/{userId}")]
+        public UserJobInfo GetSingleUserJobInfo(int userId)
+        {
+            UserJobInfo? userJobInfo = _ef.UserJobInfo
+                .Where(u => u.UserId == userId)
+                .FirstOrDefault<UserJobInfo>();
+
+            if (userJobInfo != null)
+            {
+                return userJobInfo;
+            }
+
+            throw new Exception("Failed to get user job info");
+        }
+
+        [HttpPut("EditUserJobInfo")]
+        public IActionResult EditUserJobInfo(UserJobInfo userJobInfo)
+        {
+            UserJobInfo? userJobInfoDb = _ef.UserJobInfo
+                .Where(u => u.UserId == userJobInfo.UserId)
+                .SingleOrDefault<UserJobInfo>();
+
+            if (userJobInfoDb != null)
+            {
+                userJobInfoDb.JobTitle = userJobInfo.JobTitle;
+                userJobInfoDb.Department = userJobInfo.Department;
+            }
+
+            if (_ef.SaveChanges() > 0)
+                return Ok();
+
+            throw new Exception("Failed to update user job info");
+        }
+
+        [HttpPost("AddUserJobInfo")]
+        public IActionResult AddUserJobInfo(UserJobInfo userJobInfo)
+        {
+            _ef.Add(userJobInfo);
+
+            if (_ef.SaveChanges() > 0)
+                return Ok();
+
+            throw new Exception("Failed to add user job info");
+        }
+
+        [HttpDelete("DeleteUserJobInfo{userId}")]
+        public IActionResult DeleteUserJobInfo(int userId)
+        {
+            UserJobInfo? userJobInfo = _ef.UserJobInfo
+               .Where(u => u.UserId == userId)
+               .SingleOrDefault<UserJobInfo>();
+
+            if (userJobInfo != null)
+                _ef.Remove(userJobInfo);
+
+            if (_ef.SaveChanges() > 0)
+                return Ok();
+
+            throw new Exception("Failed to delete user job info");
+        }
+
+        [HttpGet("GetUserSalary")]
+        public IEnumerable<UserSalary> GetUserSalary()
+        {
+            IEnumerable<UserSalary> userSalaries = _ef.UserSalary.ToList();
+            return userSalaries;
+        }
+
+        [HttpGet("GetSingleUserSalary/{userId}")]
+        public UserSalary GetSingleUserSalary(int userId)
+        {
+            UserSalary? userSalary = _ef.UserSalary
+                .Where(u => u.UserId == userId)
+                .FirstOrDefault<UserSalary>();
+
+            if (userSalary != null)
+            {
+                return userSalary;
+            }
+
+            throw new Exception("Failed to get user salary");
+        }
+
+        [HttpPut("EditUserSalary")]
+        public IActionResult EditUserSalary(UserSalary userSalary)
+        {
+            UserSalary? userSalaryDb = _ef.UserSalary
+                .Where(u => u.UserId == userSalary.UserId)
+                .SingleOrDefault<UserSalary>();
+
+            if (userSalaryDb != null)
+            {
+                userSalaryDb.Salary = userSalary.Salary;
+            }
+
+            if (_ef.SaveChanges() > 0)
+                return Ok();
+
+            throw new Exception("Failed to update user job info");
+        }
+
+        [HttpPost("AddUserSalary")]
+        public IActionResult AddUserSalary(UserSalary userSalary)
+        {
+            _ef.Add(userSalary);
+
+            if (_ef.SaveChanges() > 0)
+                return Ok();
+
+            throw new Exception("Failed to add user job info");
+        }
+
+        [HttpDelete("DeleteUserSalary{userId}")]
+        public IActionResult DeleteUserSalary(int userId)
+        {
+            UserSalary? userSalary = _ef.UserSalary
+               .Where(u => u.UserId == userId)
+               .SingleOrDefault<UserSalary>();
+
+            if (userSalary != null)
+                _ef.Remove(userSalary);
+
+            if (_ef.SaveChanges() > 0)
+                return Ok();
+
+            throw new Exception("Failed to delete user job info");
+        }
     }
 }
