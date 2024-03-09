@@ -24,13 +24,13 @@ namespace DotNetCourseWebAPI.Controllers
         }
 
         [HttpPost("Register")]
-        public IActionResult Register(UserForRegistrationDto userForRegistrationDto)
+        public IActionResult Register(UserForRegistrationDto userForRegistration)
         {
-            if(userForRegistrationDto.Password == userForRegistrationDto.PasswordConfirm)
+            if(userForRegistration.Password == userForRegistration.PasswordConfirm)
             {
                 string sqlEmailCheck = @"SELECT * FROM 
                                             TutorialAppSchema.Auth 
-                                            WHERE Email = '" + userForRegistrationDto.Email + "'";
+                                            WHERE Email = '" + userForRegistration.Email + "'";
 
                 IEnumerable<string> existingUsers = _dapper.LoadData<string>(sqlEmailCheck);
 
@@ -42,7 +42,7 @@ namespace DotNetCourseWebAPI.Controllers
                         rng.GetNonZeroBytes(passwordSalt);
                     }
 
-                    byte[] passwordHash = GetPasswordHash(passwordSalt, userForRegistrationDto.Password);
+                    byte[] passwordHash = GetPasswordHash(passwordSalt, userForRegistration.Password);
 
                     string sqlAddAuth = @"
                         INSERT INTO TutorialAppSchema.Auth(
@@ -50,7 +50,7 @@ namespace DotNetCourseWebAPI.Controllers
                             [PasswordHash],
                             [PasswordSalt]
                         ) VALUES(
-                            '" + userForRegistrationDto.Email + 
+                            '" + userForRegistration.Email + 
                             "', @PasswordHash, @PasswordSalt)";
 
                     List<SqlParameter> sqlParameters = new List<SqlParameter>();
@@ -65,7 +65,24 @@ namespace DotNetCourseWebAPI.Controllers
                     sqlParameters.Add(passwordHashParameter);
 
                     if(_dapper.ExecuteSqlWithParameters(sqlAddAuth, sqlParameters))
-                        return Ok("Registration completed");
+                    {
+                        string sqlAddUser = @"
+                            INSERT INTO TutorialAppSchema.Users(
+                                [FirstName],
+                                [LastName],
+                                [Email],
+                                [Gender],
+                                [Active]) VALUES(" +
+                                "'" + userForRegistration.FirstName + "'," +
+                                "'" + userForRegistration.LastName + "'," +
+                                "'" + userForRegistration.Email + "'," +
+                                "'" + userForRegistration.Gender + "', 1)";
+                        if(_dapper.ExecuteSql(sqlAddUser))
+                            return Ok("Registration completed");
+
+                        throw new Exception("Failed to add user");
+                    }
+                        
 
                     throw new Exception("Failed to register user");
                 }
