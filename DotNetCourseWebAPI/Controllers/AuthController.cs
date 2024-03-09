@@ -32,7 +32,9 @@ namespace DotNetCourseWebAPI.Controllers
                                             TutorialAppSchema.Auth 
                                             WHERE Email = '" + userForRegistrationDto.Email + "'";
 
-                if (_dapper.ExecuteSqlWithRowCount(sqlEmailCheck) == 0)
+                IEnumerable<string> existingUsers = _dapper.LoadData<string>(sqlEmailCheck);
+
+                if (existingUsers.Count() == 0)
                 {
                     byte[] passwordSalt = new byte[128 / 8];
                     using(RandomNumberGenerator rng = RandomNumberGenerator.Create())
@@ -63,7 +65,7 @@ namespace DotNetCourseWebAPI.Controllers
                     sqlParameters.Add(passwordHashParameter);
 
                     if(_dapper.ExecuteSqlWithParameters(sqlAddAuth, sqlParameters))
-                        return Ok();
+                        return Ok("Registration completed");
 
                     throw new Exception("Failed to register user");
                 }
@@ -77,25 +79,26 @@ namespace DotNetCourseWebAPI.Controllers
         [HttpPost("Login")]
         public IActionResult Login(UserForLoginDto userForLoginDto)
         {
-            string sqlForHashAndSaalt = @"SELECT 
+            string sqlForHashAndSalt = @"SELECT 
                                             [PasswordHash],
                                             [PasswordSalt] 
                                             FROM TutorialAppSchema.Auth 
                                             WHERE Email = '" + userForLoginDto.Email + "'";
 
             UserForLoginConfirmationDto userForLoginConfirmation = _dapper
-                .LoadDataSingle<UserForLoginConfirmationDto>(sqlForHashAndSaalt);
+                .LoadDataSingle<UserForLoginConfirmationDto>(sqlForHashAndSalt);
 
             byte[] passwordHash = GetPasswordHash(userForLoginConfirmation.PasswordSalt, userForLoginDto.Password);
 
             // if(passwordHash == userForLoginConfirmation.PasswordHash) - Won't work, cause they're objects
+
             for (int i = 0; i < passwordHash.Length; i++)
             {
                 if (passwordHash[i] != userForLoginConfirmation.PasswordHash[i])
                     return StatusCode(401, "Incorrect password");
             }
 
-            return Ok();
+            return Ok("You are now logged in");
         }
 
         private byte[] GetPasswordHash(byte[] passwordSalt, string password)
