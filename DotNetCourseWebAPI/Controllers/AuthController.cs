@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
 using System.Data;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -139,6 +140,14 @@ namespace DotNetCourseWebAPI.Controllers
             {
                 new Claim("userId", userId.ToString())
             };
+
+            string? tokenKeyString = _config.GetSection("AppSettings:TokenKey").Value;
+
+            SymmetricSecurityKey tokenKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(
+                    tokenKeyString != null ? tokenKeyString : ""
+                    )
+                );
         }
     }
 }
