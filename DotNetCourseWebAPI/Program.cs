@@ -1,5 +1,8 @@
 
 using DotNetCourseWebAPI.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace DotNetCourseWebAPI
 {
@@ -38,7 +41,23 @@ namespace DotNetCourseWebAPI
                 });
             });
 
+            
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+            string? tokenKeyString = builder.Configuration.GetSection("AppSettings:TokenKey").Value;
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                                tokenKeyString != null ? tokenKeyString : ""
+                            )),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
 
             var app = builder.Build();
 
@@ -56,6 +75,7 @@ namespace DotNetCourseWebAPI
             }   
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
 
             app.MapControllers();
