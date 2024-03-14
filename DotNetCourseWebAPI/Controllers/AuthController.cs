@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -130,6 +131,14 @@ namespace DotNetCourseWebAPI.Controllers
                     iterationCount: 100000,
                     numBytesRequested: 256 / 8
                 );
+        }
+
+        private string CreateToken(int userId)
+        {
+            Claim[] claims = new Claim[]
+            {
+                new Claim("userId", userId.ToString())
+            };
         }
     }
 }
