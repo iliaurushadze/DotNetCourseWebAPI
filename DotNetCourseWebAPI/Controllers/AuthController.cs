@@ -154,6 +154,13 @@ namespace DotNetCourseWebAPI.Controllers
                     SecurityAlgorithms.HmacSha512Signature
                 );
 
+            SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor()
+            {
+                Subject = new ClaimsIdentity(claims),
+                SigningCredentials = credentials,
+                Expires = DateTime.Now.AddDays(1)
+            };
+
 
         }
     }
