@@ -148,6 +148,13 @@ namespace DotNetCourseWebAPI.Controllers
                     tokenKeyString != null ? tokenKeyString : ""
                     )
                 );
+
+            SigningCredentials credentials = new SigningCredentials(
+                    tokenKey, 
+                    SecurityAlgorithms.HmacSha512Signature
+                );
+
+
         }
     }
 }
