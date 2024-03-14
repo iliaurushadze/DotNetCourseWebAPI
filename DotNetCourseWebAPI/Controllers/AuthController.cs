@@ -97,18 +97,18 @@ namespace DotNetCourseWebAPI.Controllers
         }
 
         [HttpPost("Login")]
-        public IActionResult Login(UserForLoginDto userForLoginDto)
+        public IActionResult Login(UserForLoginDto userForLogin)
         {
             string sqlForHashAndSalt = @"SELECT 
                                             [PasswordHash],
                                             [PasswordSalt] 
                                             FROM TutorialAppSchema.Auth 
-                                            WHERE Email = '" + userForLoginDto.Email + "'";
+                                            WHERE Email = '" + userForLogin.Email + "'";
 
             UserForLoginConfirmationDto userForLoginConfirmation = _dapper
                 .LoadDataSingle<UserForLoginConfirmationDto>(sqlForHashAndSalt);
 
-            byte[] passwordHash = GetPasswordHash(userForLoginConfirmation.PasswordSalt, userForLoginDto.Password);
+            byte[] passwordHash = GetPasswordHash(userForLoginConfirmation.PasswordSalt, userForLogin.Password);
 
             // if(passwordHash == userForLoginConfirmation.PasswordHash) - Won't work, cause they're objects
 
@@ -118,7 +118,15 @@ namespace DotNetCourseWebAPI.Controllers
                     return StatusCode(401, "Incorrect password");
             }
 
-            return Ok("You are now logged in");
+            string sqlForToken = @"
+                SELECT UserId FROM TutorialAppSchema.Users WHERE Email = '" + userForLogin.Email + "'";
+
+            var userId = _dapper.LoadDataSingle<int>(sqlForToken);
+
+            return Ok(new Dictionary<string, string>
+            {
+                {"token", CreateToken(userId)}
+            });
         }
 
         private byte[] GetPasswordHash(byte[] passwordSalt, string password)
