@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -161,7 +162,9 @@ namespace DotNetCourseWebAPI.Controllers
                 Expires = DateTime.Now.AddDays(1)
             };
 
-
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            
+            SecurityToken securityToken = tokenHandler.CreateToken(descriptor);
         }
     }
 }
