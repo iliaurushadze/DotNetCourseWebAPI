@@ -164,7 +164,9 @@ namespace DotNetCourseWebAPI.Controllers
 
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             
-            SecurityToken securityToken = tokenHandler.CreateToken(descriptor);
+            SecurityToken token = tokenHandler.CreateToken(descriptor);
+
+            return tokenHandler.WriteToken(token);
         }
     }
 }
