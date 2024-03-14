@@ -74,9 +74,9 @@ namespace DotNetCourseWebAPI
                 app.UseHttpsRedirection(); // We don't really need https, when we in developmwnt!!!!
             }   
 
-            app.UseAuthorization();
             app.UseAuthentication();
 
+            app.UseAuthorization();
 
             app.MapControllers();
 
