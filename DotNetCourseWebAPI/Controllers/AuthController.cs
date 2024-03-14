@@ -133,6 +133,18 @@ namespace DotNetCourseWebAPI.Controllers
             });
         }
 
+        [HttpGet("RefreshToken")]
+        public string RefreshToken()
+        {
+            string sqlForUserId = @"
+                SELECT UserId FROM TutorialAppSchema.Users WHERE UserId = '" 
+                + User.FindFirst("userId")?.Value + "'";
+
+            int userId = _dapper.LoadDataSingle<int>(sqlForUserId);
+
+            return CreateToken(userId);
+        }
+
         private byte[] GetPasswordHash(byte[] passwordSalt, string password)
         {
             string passwordSaltPlusString = _config.GetSection("AppSettings:PasswordKey").Value +
